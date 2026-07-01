@@ -1,0 +1,108 @@
+EXERCISE 7: FINANCIAL FORECASTING - ANALYSIS
+================================================
+
+1. WHAT IS RECURSION?
+-----------------------
+Recursion is when a method calls itself to solve a smaller version of
+the same problem, until it reaches a simple case it can answer directly
+(called the BASE CASE). Each recursive call breaks the problem down
+further, and the base case stops the chain from running forever.
+
+Every recursive method needs two parts:
+- BASE CASE: The condition that stops the recursion (e.g., years == 0)
+- RECURSIVE CASE: The method calling itself with a smaller/simpler input
+
+Why it simplifies problems: Financial growth is naturally a repeated,
+self-similar process - this year's value depends on last year's value,
+which depends on the year before that, and so on. Recursion mirrors
+this real-world structure directly in code, instead of manually
+tracking values in a loop.
+
+
+2. HOW THE RECURSIVE ALGORITHM WORKS HERE
+---------------------------------------------
+calculateFutureValue(presentValue, growthRate, years):
+  - Base case: if years == 0, return presentValue as-is (no more growth left)
+  - Recursive case: apply ONE year of growth (presentValue * (1+rate)),
+    then call itself again with years - 1
+
+Example trace for presentValue=100000, rate=8%, years=3:
+
+  calculateFutureValue(100000, 0.08, 3)
+   -> calculateFutureValue(108000, 0.08, 2)
+       -> calculateFutureValue(116640, 0.08, 1)
+           -> calculateFutureValue(125971.2, 0.08, 0)
+               -> returns 125971.2   (BASE CASE HIT)
+           <- returns 125971.2
+       <- returns 125971.2
+   <- returns 125971.2
+
+Each call "waits" for the one below it to finish before returning,
+which is how recursion naturally builds up the final answer.
+
+
+3. TIME COMPLEXITY
+---------------------
+- The method makes exactly ONE recursive call per year.
+- Total number of calls = years (n)
+- Time Complexity: O(n)
+- Space Complexity: O(n) -> each recursive call adds a new frame to
+  the CALL STACK, and these frames stay in memory until the base case
+  is reached and the calls start returning.
+
+This is actually the SAME time complexity as doing it with a simple
+loop - recursion doesn't make it faster. The trade-off is:
+  + Cleaner, more intuitive code matching the problem's structure
+  - Uses more memory (call stack) than an iterative loop (O(1) space)
+  - Risk of StackOverflowError for very large 'years' values (e.g.,
+    forecasting 100,000+ years, which is unrealistic in finance anyway)
+
+
+4. HOW TO OPTIMIZE THE RECURSIVE SOLUTION
+----------------------------------------------
+a) TAIL RECURSION STYLE (what we already used):
+   Our calculateFutureValue() carries the growing value forward as a
+   PARAMETER instead of multiplying results after the recursive call
+   returns. This is called "tail recursion" - the recursive call is
+   the LAST operation in the method. Some languages/compilers can
+   optimize tail recursion to avoid growing the call stack, though
+   Java does NOT automatically do this optimization.
+
+b) CONVERT TO ITERATIVE (LOOP) VERSION:
+   For large 'years' values, an iterative loop avoids stack growth
+   entirely and uses O(1) space:
+
+     double calculateFutureValueIterative(double pv, double rate, int years) {
+         double result = pv;
+         for (int i = 0; i < years; i++) {
+             result *= (1 + rate);
+         }
+         return result;
+     }
+
+c) MEMOIZATION (caching):
+   Useful when the SAME subproblem is computed multiple times (e.g.,
+   Fibonacci-style recursion). For THIS specific formula, every call
+   has a unique 'years' value computed only once per forecast, so
+   memoization doesn't help much here - but it's the standard
+   technique whenever a recursive algorithm re-solves overlapping
+   subproblems repeatedly. The code includes a memoized version to
+   demonstrate the technique even though the gain is minimal in this
+   particular case.
+
+d) USE THE DIRECT FORMULA WHEN POSSIBLE:
+   Since this is compound growth, math gives us a closed-form formula:
+       FutureValue = PresentValue * (1 + rate)^years
+   Using Math.pow() is actually O(log n) (or even O(1) depending on
+   implementation) and avoids recursion/loops entirely:
+       double fv = presentValue * Math.pow(1 + growthRate, years);
+   This is the BEST optimization when the underlying pattern allows
+   a direct mathematical solution instead of simulating each step.
+
+
+CONCLUSION
+------------
+Recursion was used here to simplify and clearly model year-by-year
+compound growth, but for production-grade forecasting tools handling
+large time horizons, an iterative loop or direct formula (Math.pow)
+would be the more efficient and stack-safe choice.

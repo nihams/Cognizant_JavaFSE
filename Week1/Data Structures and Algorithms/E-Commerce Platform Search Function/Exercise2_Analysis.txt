@@ -1,0 +1,72 @@
+EXERCISE 2: E-COMMERCE PLATFORM SEARCH FUNCTION - ANALYSIS
+=============================================================
+
+1. ASYMPTOTIC NOTATION (BIG O)
+-------------------------------
+Big O notation describes how the runtime (or space) of an algorithm
+grows as the input size (n) grows. It tells us the WORST-CASE upper
+bound, ignoring constants and lower-order terms, so we can compare
+algorithms independent of hardware or input specifics.
+
+For search operations specifically:
+- Best Case  : The fewest steps possible (e.g., target found immediately)
+- Average Case : Expected steps over many random inputs
+- Worst Case : Maximum steps needed (e.g., target is last, or absent)
+
+We usually focus on WORST CASE because it gives a guarantee on
+performance no matter how the data is arranged.
+
+
+2. LINEAR SEARCH
+-----------------
+- How it works: Checks each element one by one from start to end.
+- Best Case   : O(1)      - target is the very first element checked
+- Average Case: O(n/2) -> O(n) - target is somewhere in the middle
+- Worst Case  : O(n)      - target is last, or not present at all
+- Works on: Sorted OR unsorted data (no pre-condition needed)
+
+
+3. BINARY SEARCH
+------------------
+- How it works: Repeatedly divides the SORTED array in half, eliminating
+  half the remaining elements each step.
+- Best Case   : O(1)      - target is the middle element
+- Average Case: O(log n)
+- Worst Case  : O(log n)  - keeps halving until only one element remains
+- Works on: ONLY sorted data (must sort first if data isn't already sorted,
+  which itself costs O(n log n) using an efficient sort)
+
+
+4. COMPARISON TABLE
+---------------------
+| Algorithm      | Best  | Average  | Worst    | Needs Sorted Data? |
+|----------------|-------|----------|----------|---------------------|
+| Linear Search  | O(1)  | O(n)     | O(n)     | No                  |
+| Binary Search  | O(1)  | O(log n) | O(log n) | Yes                 |
+
+Example with 1,000,000 products:
+- Linear Search worst case  -> up to 1,000,000 comparisons
+- Binary Search worst case  -> only ~20 comparisons (log2(1,000,000) ≈ 20)
+
+
+5. WHICH IS MORE SUITABLE FOR AN E-COMMERCE PLATFORM?
+---------------------------------------------------------
+Binary Search is far more suitable for an e-commerce platform's product
+search, for these reasons:
+
+- Catalogs are LARGE (thousands to millions of products), so the
+  O(log n) advantage over O(n) becomes massive at scale.
+- Product data (by ID, price, or name) can be pre-sorted and indexed
+  ONCE, then searched repeatedly - the sorting cost is paid only once,
+  while search happens many times (every customer query).
+- Real-world databases already use sorted indexes/B-trees internally,
+  which is conceptually an extension of binary search principles.
+
+Linear Search would only make sense for:
+- Very small datasets (e.g., < 50 items) where the difference is negligible
+- Searching by a field that changes too often to keep sorted
+  (e.g., live stock count) and re-sorting isn't worth it
+
+CONCLUSION: For a product ID/name based search on a catalog of
+significant size, Binary Search on pre-sorted/indexed data is the
+clear choice for an e-commerce platform.
