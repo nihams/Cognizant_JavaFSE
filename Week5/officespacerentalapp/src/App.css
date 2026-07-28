@@ -1,0 +1,15 @@
+.container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  border: 1px solid gray;
+  padding: 15px;
+  margin: 20px 0;
+  width: 320px;
+}
+
+img {
+  border-radius: 8px;
+}

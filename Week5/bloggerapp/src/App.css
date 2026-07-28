@@ -1,0 +1,27 @@
+.App {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.box {
+  padding: 16px;
+}
+
+.box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.box ul li {
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.blog-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #ddd;
+}
